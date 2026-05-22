@@ -1,0 +1,1450 @@
+# Summary
+
+- Node.js ek **JavaScript runtime environment** hai jo JavaScript ko browser ke bahar run karne deta hai.
+- Pehle JavaScript sirf browser me chalti thi, but Node.js ke baad JS se backend/server bhi ban sakta hai.
+- Node.js ka main feature hai:
+  - **Asynchronous**
+  - **Event-driven**
+- Iska matlab:
+  - multiple tasks ek saath efficiently handle hote hain
+  - server fast aur scalable banta hai
+- Node.js file system access, network requests, HTTP server creation jaise kaam kar sakta hai.
+- Callback functions aur event loop Node ka core concept hai.
+- Example diya gaya hai ek simple server ka jo browser me `"Hello World"` bhejta hai.
+
+---
+
+# Asaan Bhasha Me 
+
+## 1. Node.js hota kya hai?
+
+Simple:
+
+> "JavaScript ko browser ke bahar chalane ka engine"
+
+Pehle JS sirf websites ke buttons, animations, forms etc handle karti thi.
+
+Jaise:
+- button click
+- popup
+- form validation
+
+Lekin backend nahi bana sakte the.
+
+Fir Node.js aaya aur bola:
+
+> "Bhai backend bhi JS me hi bana le"
+
+Ab JS se:
+- server bana sakte ho
+- APIs bana sakte ho
+- database connect kar sakte ho
+- files read/write kar sakte ho
+
+---
+
+# Real Life Analogy
+
+## Browser JS
+Jaise:
+- waiter sirf customer se baat kar raha hai
+
+## Node.js
+Ab wahi banda:
+- kitchen bhi sambhal raha hai
+- billing bhi
+- order management bhi
+
+Matlab JS ab full-stack ban gayi.
+
+---
+
+# Important Concept → Asynchronous
+
+Ye Node ka sabse bada funda hai.
+
+## Synchronous ka matlab
+
+Kaam line-by-line hoga.
+
+Example:
+
+1. File read karo
+2. Wait karo
+3. Fir DB query karo
+4. Wait karo
+5. Fir next kaam
+
+Problem:
+Agar file huge hui toh pura program ruk jayega.
+
+---
+
+## Asynchronous ka matlab
+
+Node bolta hai:
+
+> "Tu kaam start kar, complete hone tak mai dusra kaam karta hu."
+
+Example:
+
+- file read start
+- uske wait me database query bhi start
+- jo pehle khatam hoga uska next step chalega
+
+Isliye Node fast hota hai.
+
+---
+
+# Event Driven Kya Hai?
+
+Node continuously events ka wait karta rehta hai.
+
+Event examples:
+- network request
+- database response
+- file read complete
+- user request
+
+Jaise hi event aata hai:
+➡ callback function run hota hai.
+
+---
+
+# Callback Kya Hai?
+
+Callback = function jo baad me chalega.
+
+Example:
+
+```js
+readFile("abc.txt", function() {
+   console.log("file read ho gayi");
+});
+```
+
+
+- Callback = function jo kisi dusre function ko argument ke form me diya jata hai.
+- JavaScript me functions:
+  - normal function
+  - anonymous function
+  - arrow function
+- sab same kaam kar sakte hain, bas syntax alag hota hai.
+- Functions JS me "first class citizens" hain:
+  - variable me store ho sakte hain
+  - dusre functions me pass ho sakte hain
+- `forEach`, `map`, `addEventListener` sab callbacks use karte hain.
+- Callback ko hum manually call nahi karte.
+- Dusra function us callback ko execute karta hai.
+
+---
+
+# Asaan Bhasha Me (Ye Kya Chutiyapa Chal Raha Hai 😭)
+
+## Sabse Important Line
+
+```text
+Callback = function passed into another function.
+```
+
+Matlab:
+
+> "Ek function ko dusre function ke andar bhejna."
+
+Bas. Pure article ka saar yahi hai 💀
+
+---
+
+# Real Life Analogy
+
+Soch:
+
+Tu Swiggy pe order karta hai.
+
+Tu bolta hai:
+
+```text
+"Pizza ready ho jaye toh mujhe call kar dena"
+```
+
+Yahaan:
+- pizza banana = main task
+- tujhe call karna = callback
+
+Matlab:
+> "Kaam complete hone ke baad ye function chala dena"
+
+---
+
+# Pehle Function Samajh
+
+## Normal Function
+
+```js
+function greet(name) {
+   console.log("Hello " + name);
+}
+```
+
+### Breakdown
+
+| Part | Meaning |
+|---|---|
+| function | function bana rahe |
+| greet | function ka naam |
+| name | parameter |
+| body | actual kaam |
+
+---
+
+# Function Call
+
+```js
+greet("Sam");
+```
+
+Output:
+
+```text
+Hello Sam
+```
+
+---
+
+# Anonymous Function
+
+Anonymous = bina naam wala function
+
+```js
+const greet = function(name) {
+   console.log(name);
+}
+```
+
+Yahaan:
+- function ka khud ka naam nahi hai
+- variable `greet` me store hai
+
+---
+
+# Arrow Function
+
+Short syntax version.
+
+```js
+const greet = (name) => {
+   console.log(name);
+}
+```
+
+Aur short:
+
+```js
+const greet = name => console.log(name);
+```
+
+---
+
+# IMPORTANT 🔥
+
+Ye teenon SAME kaam karte hain:
+
+```js
+function greet(name) {}
+```
+
+```js
+const greet = function(name) {}
+```
+
+```js
+const greet = (name) => {}
+```
+
+Bas syntax different hai.
+
+---
+
+# CALLBACK ACTUALLY KYA HAI?
+
+## Ye normal callback hai:
+
+```js
+function doSomething(callback) {
+   callback();
+}
+```
+
+Yahaan:
+- `callback` ek function hai
+- doosra function usko run karega
+
+---
+
+# Example
+
+```js
+function sayHello() {
+   console.log("hello");
+}
+
+doSomething(sayHello);
+```
+
+Yahaan:
+- humne function pass kiya
+- call nahi kiya
+
+---
+
+# VERY IMPORTANT ⚠️
+
+## Difference
+
+### ❌ Wrong
+
+```js
+doSomething(sayHello());
+```
+
+Isme:
+- function turant run ho jayega
+
+---
+
+### ✅ Correct
+
+```js
+doSomething(sayHello);
+```
+
+Isme:
+- sirf reference pass hua
+- baad me run hoga
+
+---
+
+# forEach Callback
+
+## Ye dekho:
+
+```js
+notes.forEach((note) => console.log(note));
+```
+
+forEach internally har item pe callback chala raha hai.
+
+Internally kuch aisa hota hai:
+
+```js
+for every item:
+   callback(item)
+```
+
+---
+
+# Under The Hood
+
+Article ka MOST IMPORTANT PART 🔥
+
+```js
+function myForEach(array, callback) {
+   for(let i=0; i<array.length; i++) {
+      callback(array[i]);
+   }
+}
+```
+
+Matlab:
+
+- loop chal raha
+- har item callback ko bhej raha
+
+---
+
+# Ye `item` kaha se aaya? 🤡
+
+```js
+(item) => console.log(item + 2)
+```
+
+`item` callback ko automatically mil raha hai from:
+
+```js
+callback(array[i])
+```
+
+Matlab:
+- `array[i]` pass hua
+- woh `item` ban gaya
+
+---
+
+# map Callback
+
+## map kya karta hai?
+
+Purane array ko transform karta hai.
+
+```js
+const arr = [1,2,3];
+
+const newArr = arr.map(num => num + 2);
+```
+
+Output:
+
+```text
+[3,4,5]
+```
+
+---
+
+# Internally map kya karta?
+
+```js
+for every item:
+   result = callback(item)
+   newArray.push(result)
+```
+
+---
+
+# Event Listener Callback
+
+## MOST REAL WORLD EXAMPLE
+
+```js
+element.addEventListener("click", (event) => {
+   console.log(event.target.value);
+});
+```
+
+---
+
+# Isme kya ho raha?
+
+Browser bol raha:
+
+```text
+"Jab click hoga tab ye callback chalaunga"
+```
+
+---
+
+# `event` kaha se aaya?
+
+Browser khud pass karta hai callback me.
+
+Internally kuch aisa:
+
+```js
+callback(eventObject)
+```
+
+---
+
+# Callback Ka Golden Rule 🏆
+
+```text
+Callbacks ko hum nahi chalate.
+
+Dusra function callback ko chalata hai.
+```
+
+---
+
+# First Class Citizens Meaning
+
+JavaScript me functions:
+- variable me store ho sakte
+- pass ho sakte
+- return ho sakte
+
+Isi wajah se callbacks possible hain.
+
+---
+
+# Core Places Jaha Callback Use Hota
+
+| Feature | Callback Use |
+|---|---|
+| forEach | yes |
+| map | yes |
+| filter | yes |
+| addEventListener | yes |
+| setTimeout | yes |
+| Node.js async code | yes |
+
+---
+
+# SUPER IMPORTANT MINDSET
+
+## Ye yaad rakh:
+
+```text
+Callback = "jab kaam ho jaye tab ye function chala dena"
+```
+
+---
+
+# Ek Ultimate Example
+
+```js
+setTimeout(() => {
+   console.log("Hello");
+}, 2000);
+```
+
+Meaning:
+
+```text
+2 second baad callback run karo
+```
+
+---
+
+# Final One-Line Understanding
+
+```text
+Callback is just a function that another function executes later.
+```
+
+---
+
+# Interview Level Definition
+
+> A callback is a function passed as an argument to another function which is executed later by that function.
+
+---
+
+# Sabse Important Confusion Clear
+
+## Ye:
+
+```js
+myFunction(callback)
+```
+
+matlab:
+- callback PASS hua
+
+---
+
+## Ye:
+
+```js
+myFunction(callback())
+```
+
+matlab:
+- callback ABHI RUN ho gaya
+
+Ye dono me huge difference hai 🔥
+
+
+
+# Summary
+
+- Node.js basically JavaScript hi hai, bas browser ke bahar chalti hai.
+- Is lesson me Node.js ke basic concepts sikhaye jayenge:
+  - modules
+  - HTTP server
+  - file handling
+  - URL parsing
+  - events
+  - npm
+- End project:
+  - ek basic website banana
+  - pages:
+    - Index
+    - About
+    - Contact Me
+- Important built-in modules:
+  - `http`
+  - `fs`
+  - `url`
+  - `events`
+- Tum Node.js scripts terminal se run karna bhi seekhoge.
+
+---
+
+# Asaan Bhasha Me (Ye Kya Bol Raha Hai 😭)
+
+## Overall Scene
+
+Ye pura lesson basically bol raha:
+
+```text
+"Ab theory ho gayi.
+Ab actual Node.js coding start karte hain."
+```
+
+Matlab:
+- server banana
+- files handle karna
+- URLs samajhna
+- events use karna
+
+sab practical me karoge.
+
+---
+
+# Sabse Pehle Important Baat
+
+```text
+Node.js = JavaScript
+```
+
+Agar JS nahi aata:
+➡ Node samajhna mushkil hoga.
+
+Isliye bol rahe:
+> pehle JavaScript strong karo.
+
+---
+
+# End Goal Kya Hai?
+
+Tumhe ek simple website banani hai.
+
+Pages:
+- Home / Index
+- About
+- Contact Me
+
+Matlab browser me alag routes pe alag pages.
+
+Example:
+
+```text
+localhost:3000/
+```
+➡ Home page
+
+```text
+localhost:3000/about
+```
+➡ About page
+
+```text
+localhost:3000/contact
+```
+➡ Contact page
+
+---
+
+# Ab Modules Samjho
+
+## Module kya hota hai?
+
+Simple:
+
+```text
+"Code ka reusable package"
+```
+
+Jaise:
+- calculator module
+- file module
+- HTTP module
+
+Node me already built-in modules hote hain.
+
+---
+
+# Important Modules
+
+| Module | Kaam |
+|---|---|
+| http | server banana |
+| fs | file handling |
+| url | URL parse karna |
+| events | custom events |
+
+---
+
+# HTTP Module
+
+## Kaam kya?
+
+Server banana.
+
+Example:
+
+```js
+const http = require("http");
+```
+
+Fir:
+
+```js
+http.createServer(...)
+```
+
+Matlab:
+➡ web server create karo.
+
+---
+
+# Real Meaning
+
+Browser request bhejega:
+
+```text
+localhost:3000
+```
+
+Node server response bhejega:
+
+```text
+Hello World
+```
+
+---
+
+# File System (`fs`) Module
+
+## Kaam:
+
+Files handle karna.
+
+Matlab:
+- read file
+- write file
+- update file
+- delete file
+
+---
+
+# Real World Example
+
+```js
+fs.readFile(...)
+```
+
+➡ file padho
+
+---
+
+```js
+fs.writeFile(...)
+```
+
+➡ file banao ya overwrite karo
+
+---
+
+```js
+fs.appendFile(...)
+```
+
+➡ existing file me add karo
+
+---
+
+```js
+fs.unlink(...)
+```
+
+➡ file delete karo
+
+---
+
+# URL Module
+
+## Problem
+
+Browser URL huge hoti hai.
+
+Example:
+
+```text
+http://localhost:3000/about?name=sam
+```
+
+Node ko isko todna padta hai.
+
+---
+
+# URL Module Ka Kaam
+
+URL ko readable parts me todna.
+
+Example:
+
+```text
+pathname -> /about
+query -> name=sam
+```
+
+---
+
+# Event Module
+
+Ye Node ka core concept hai.
+
+Node continuously events sunta rehta hai.
+
+Example:
+- request aayi
+- file read complete
+- button click
+- database response
+
+---
+
+# Event Emitter
+
+Tum khud ke events bhi bana sakte ho.
+
+Example:
+
+```js
+eventEmitter.emit("login");
+```
+
+Aur:
+
+```js
+eventEmitter.on("login", callback);
+```
+
+Matlab:
+➡ login event aate hi callback chalao.
+
+---
+
+# NPM Kya Hai?
+
+## Full Form
+
+```text
+Node Package Manager
+```
+
+---
+
+# Kaam
+
+Internet se packages install karna.
+
+Example:
+
+```bash
+npm install express
+```
+
+Matlab:
+➡ Express package download karo.
+
+---
+
+# Terminal Se Node Run Karna
+
+Example:
+
+```bash
+node app.js
+```
+
+Matlab:
+➡ `app.js` execute karo.
+
+---
+
+# MOST IMPORTANT FLOW 🔥
+
+```text
+Browser Request
+       ↓
+Node Server
+       ↓
+Route Check
+       ↓
+File Read / Logic
+       ↓
+Response Send
+```
+
+Yehi pura backend ka foundation hai.
+
+---
+
+# Important Concepts They Want You To Learn
+
+## 1. HTTP Server
+
+Browser se baat karna.
+
+---
+
+## 2. File Handling
+
+Data/files manage karna.
+
+---
+
+## 3. URL Parsing
+
+Kaunsa page open hua?
+
+---
+
+## 4. Events
+
+Kab kya trigger hua?
+
+---
+
+## 5. Modules
+
+Reusable code use karna.
+
+---
+
+## 6. NPM
+
+External libraries install karna.
+
+---
+
+# Why This Lesson Important Hai?
+
+Kyuki ye:
+```text
+"Backend ka ABCD"
+```
+
+hai.
+
+Aage:
+- Express
+- APIs
+- Databases
+- Authentication
+
+sab isi foundation pe build hoga.
+
+---
+
+# Super Simple Mental Model 🧠
+
+```text
+Node.js backend me:
+
+HTTP module -> server
+FS module -> files
+URL module -> routes
+Events module -> async/event system
+NPM -> external packages
+```
+
+---
+
+# Ek Line Me Pure Lesson Ka Matlab
+
+```text
+"Node.js ke basic tools use karke ek simple backend website banana seekho."
+```
+
+
+
+
+# PART 1 — Debugging Node.js
+
+# Summary
+
+- Browser DevTools ke alawa Node.js ko VS Code me debug kar sakte ho.
+- VS Code ka built-in debugger:
+  - breakpoints
+  - variable inspection
+  - step-by-step execution
+  provide karta hai.
+- Node debugging backend development me daily-use skill hai.
+
+---
+
+# Asaan Bhasha Me (Debugging Kya Bhosda Hai 😭)
+
+## Debugging = Bugs dhundhna
+
+Matlab:
+- code kaha toot raha
+- variable ki value kya hai
+- kaunsi line pe issue aa raha
+
+ye sab check karna.
+
+---
+
+# Browser Debugging vs Node Debugging
+
+## Browser Debugging
+
+Frontend ke liye:
+- inspect
+- console
+- network tab
+
+---
+
+## Node Debugging
+
+Backend ke liye:
+- VS Code debugger
+- terminal debugger
+
+---
+
+# VS Code Debugger Kya Karta?
+
+Tum code ko pause kar sakte ho.
+
+Example:
+
+```js
+const age = 20;
+const result = age + 10;
+```
+
+Breakpoint lagaoge:
+➡ execution wahin ruk jayega.
+
+Fir:
+- variables dekh sakte
+- next line execute kar sakte
+- issue trace kar sakte
+
+---
+
+# MOST IMPORTANT TOOL 🔥
+
+## JavaScript Debug Terminal
+
+VS Code me special terminal hota hai.
+
+Node app debugger mode me run hoti hai.
+
+---
+
+# Real Developer Workflow
+
+```text
+Bug aaya
+   ↓
+Breakpoint lagaya
+   ↓
+Code pause hua
+   ↓
+Variables inspect kiye
+   ↓
+Bug pakda
+```
+
+---
+
+# PART 2 — Basic Informational Site Project
+
+# Summary
+
+Project:
+- basic Node.js website banana
+
+Pages:
+- index.html
+- about.html
+- contact-me.html
+- 404.html
+
+Routes:
+- `/`
+- `/about`
+- `/contact-me`
+
+Unknown routes:
+➡ `404.html`
+
+---
+
+# Ye Actual Me Kya Karwa Rahe?
+
+Tum backend ka first mini project banaoge.
+
+Matlab:
+➡ browser request ke according different pages serve karna.
+
+---
+
+# Folder Structure
+
+```text
+project/
+│
+├── index.js
+├── index.html
+├── about.html
+├── contact-me.html
+└── 404.html
+```
+
+---
+
+# Route Mapping
+
+| URL | File |
+|---|---|
+| `/` | index.html |
+| `/about` | about.html |
+| `/contact-me` | contact-me.html |
+| anything else | 404.html |
+
+---
+
+# Backend Flow
+
+```text
+User Request
+     ↓
+Node Server
+     ↓
+URL Check
+     ↓
+Correct HTML file send
+```
+
+---
+
+# Example
+
+User opens:
+
+```text
+localhost:8080/about
+```
+
+Node:
+- URL dekhega
+- about.html serve karega
+
+---
+
+# 404 Page Kyu?
+
+Agar user:
+
+```text
+localhost:8080/ye-kya-hai
+```
+
+open kare:
+➡ route exist nahi karta
+
+Toh:
+```text
+404.html
+```
+
+show karo.
+
+---
+
+# PART 3 — Environment Variables
+
+# Summary
+
+- Environment variables = external configurable values.
+- Different environments me different values ho sakti hain.
+- Secrets store karne ke liye use hote:
+  - API keys
+  - DB passwords
+  - URLs
+- `.env` file me store karte hain.
+- Access:
+```js
+process.env
+```
+
+---
+
+# Asaan Bhasha Me
+
+## Problem
+
+Suppose:
+
+```js
+const password = "sam123";
+```
+
+Agar GitHub pe push kar diya:
+💀 password leak.
+
+---
+
+# Solution → Environment Variables
+
+Sensitive cheeze code ke bahar rakho.
+
+---
+
+# `.env` File
+
+```env
+DB_PASSWORD=sam123
+API_KEY=xyz
+```
+
+---
+
+# Access Kaise Kare?
+
+```js
+process.env.DB_PASSWORD
+```
+
+---
+
+# Real Meaning
+
+```text
+"Code ke bahar values rakho taaki environment ke according change ho sake."
+```
+
+---
+
+# Environment Kya Hota?
+
+| Environment | Meaning |
+|---|---|
+| Development | local machine |
+| Production | deployed app |
+| Testing | test server |
+
+---
+
+# Example
+
+Development DB:
+```text
+localhost database
+```
+
+Production DB:
+```text
+real production database
+```
+
+Same code.
+Different environment variables.
+
+---
+
+# NODE_ENV
+
+Industry standard variable.
+
+Example:
+
+```env
+NODE_ENV=development
+```
+
+or
+
+```env
+NODE_ENV=production
+```
+
+---
+
+# Code Example
+
+```js
+if(process.env.NODE_ENV === "production") {
+   console.log("Production mode");
+}
+```
+
+---
+
+# Running With Env Variables
+
+## Directly
+
+```bash
+NODE_ENV=prod node index.js
+```
+
+---
+
+# export Command
+
+```bash
+export NODE_ENV=prod
+```
+
+Current shell session ke liye variable set.
+
+---
+
+# `.env` Best Method
+
+```env
+NODE_ENV=prod
+VIDEO_URL=https://youtube.com
+```
+
+Run:
+
+```bash
+node --env-file=.env index.js
+```
+
+---
+
+# MOST IMPORTANT ⚠️
+
+## NEVER PUSH `.env`
+
+Add to:
+
+```text
+.gitignore
+```
+
+warna:
+- passwords leak
+- API keys leak
+- database hacked
+
+💀💀💀
+
+---
+
+# Why Environment Variables OP Hain 🔥
+
+## Benefits
+
+| Benefit | Why |
+|---|---|
+| Security | secrets hidden |
+| Flexibility | env-specific configs |
+| Cleaner code | hardcoding nahi |
+| Deployment friendly | prod/dev separate |
+
+---
+
+# Important Point
+
+Environment variables ALWAYS:
+
+```text
+STRING
+```
+
+hoti hain.
+
+---
+
+# Example
+
+```env
+PORT=3000
+```
+
+Actually:
+```text
+"3000"
+```
+
+string hai.
+
+---
+
+# Conversion Example
+
+```js
+Number(process.env.PORT)
+```
+
+---
+
+# `.env.sample`
+
+Industry practice:
+
+```env
+DB_URL=
+API_KEY=
+JWT_SECRET=
+```
+
+Taaki dusre devs ko pata chale:
+➡ kya variables chahiye.
+
+---
+
+# FULL Mental Model 🧠
+
+```text
+.env file
+    ↓
+Node loads values
+    ↓
+process.env object
+    ↓
+Code uses them
+```
+
+---
+
+# MOST IMPORTANT INTERVIEW QUESTIONS
+
+## What are environment variables?
+
+```text
+Variables whose values depend on the environment in which the app runs.
+```
+
+---
+
+## Why use them?
+
+- secrets
+- configs
+- deployment differences
+
+---
+
+## How access them?
+
+```js
+process.env
+```
+
+---
+
+## Data type?
+
+```text
+String
+```
+
+Always.
+
+---
+
+## Should .env go to GitHub?
+
+```text
+NO ❌
+```
+
+---
+
+# Ultimate One-Line Understanding
+
+```text
+Environment variables let your app behave differently in different environments without changing the source code.
+```
